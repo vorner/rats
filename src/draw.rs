@@ -59,22 +59,20 @@ impl SystemDesc<'_, '_, SetSpritesSystem> for SetSprites {
             .with(camera)
             .build();
 
-        world.exec(|(e, mut f, mut t): (Entities, WriteStorage<Field>, WriteStorage<Transform>)| {
-            let mut transform = Transform::default();
-            transform.set_translation_xyz(1.0, 1.0, 0.0);
-            transform.set_scale(Vector3::new(0.01, 0.01, 0.01));
+        let mut transform = Transform::default();
+        transform.set_translation_xyz(1.0, 1.0, 0.0);
+        transform.set_scale(Vector3::new(0.01, 0.01, 0.01));
 
-            e.build_entity()
-                .with(transform.clone(), &mut t)
-                .with(Field::Path, &mut f)
-                .build();
+        world.create_entity()
+            .with(transform.clone())
+            .with(Field::Path)
+            .build();
 
-            transform.set_translation_xyz(1.0, 2.0, 0.0);
-            e.build_entity()
-                .with(transform, &mut t)
-                .with(Field::Wall, &mut f)
-                .build();
-        });
+        transform.set_translation_xyz(1.0, 2.0, 0.0);
+        world.create_entity()
+            .with(transform)
+            .with(Field::Wall)
+            .build();
 
         SetSpritesSystem {
             maze,
@@ -120,7 +118,7 @@ impl<'a> System<'a> for SetSpritesSystem {
             }).unwrap();
         }
 
-        for (entity, _) in (&data.entities, &to_delete).join() {
+        for (entity, _, _) in (&data.entities, &to_delete, !&to_update).join() {
             data.sprites.remove(entity);
         }
     }
