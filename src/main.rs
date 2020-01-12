@@ -10,7 +10,10 @@ use log::{error, info};
 
 use load::Load;
 
+mod draw;
+mod game;
 mod load;
+mod maze;
 
 fn run() -> Result<(), Error> {
     amethyst::start_logger(Default::default());
@@ -31,7 +34,8 @@ fn run() -> Result<(), Error> {
                 .with_clear([0.0, 0.0, 0.0, 1.0])
             )
             .with_plugin(RenderFlat2D::default())
-        )?;
+        )?
+        .with_system_desc(draw::SetSprites, "set_sprites", &[]);
 
     Application::build(resources, Load::new())?
         .with_frame_limit(FrameRateLimitStrategy::Sleep, 30)
