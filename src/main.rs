@@ -30,6 +30,7 @@ fn run() -> Result<(), Error> {
         .with_bundle(RenderingBundle::<DefaultBackend>::new()
             // Output to window
             .with_plugin(RenderToWindow::from_config_path(display_config)
+                .unwrap()
                 // With solid black background
                 .with_clear([0.0, 0.0, 0.0, 1.0])
             )
